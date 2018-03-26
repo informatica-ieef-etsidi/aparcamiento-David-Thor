@@ -11,39 +11,53 @@
 
 struct TPlaza {
 	int vehiculo; //0 - coche, 1 - moto
-	int ocupado; //1 si la plaza esta ocupada
+	int ocupado; //1 si la plaza esta ocupada, 0 si esta libre
 	char matricula[9];
+};
+
+struct TUsuario {
+	char nombre[20];
+	char contraseña[10];
 };
 
 void main() {        
 
 	struct TPlaza plaza[NUMPLAZAS] = { {0,0}, {0,0}, {1,0}, {1,0} };
+	struct TUsuario usuario = { "admin", "1234" };
+	char pedirNombre[20], pedirContraseña[10];
 	char opcion, otraOpcion, opcionPlaza, otraMatricula[9];
 	int i, z;
 	float dinero, tiempoTotal;
 
-	while (1) {
+	printf("Introduce tu nombre de usuario: \n");
+	gets(pedirNombre);
+	printf("Introduce tu contrase%ca: \n", 164);
+	gets(pedirContraseña);
 
-		//Pedir datos por pantalla   
-		time_t start[4], end[4];  //Creacion de objetos para calcular el tiempo que un coche esta aparcado
-		SYSTEMTIME str_t;
-		GetSystemTime(&str_t);
+	if (strcmp(pedirNombre, usuario.nombre) == 0 && strcmp(pedirContraseña, usuario.contraseña) == 0) {
+		while (1) {
+			printf("Has iniciado sesion correctamente\n");
 
-		printf("Son las %d:%d:% d\n", str_t.wHour, str_t.wMinute, str_t.wSecond);
-		printf("Seleccione una de estas opciones : \n");
-		printf("R - Reservar plaza \n");
-		printf("A - Abandonar plaza \n");
-		printf("E - Estado del aparcamiento \n");
-		printf("S - Salir del programa \n");
-		printf("B - Buscar un vehiculo \n");
-		scanf_s("%c", &opcion, 1); getchar();
+			//Pedir datos por pantalla   
+			time_t start[4], end[4];  //Creacion de objetos para calcular el tiempo que un coche esta aparcado
+			SYSTEMTIME str_t;
+			GetSystemTime(&str_t);
 
-		switch (opcion) {
+			printf("Son las %d:%d:% d\n", str_t.wHour, str_t.wMinute, str_t.wSecond);
+			printf("Seleccione una de estas opciones : \n");
+			printf("R - Reservar plaza \n");
+			printf("A - Abandonar plaza \n");
+			printf("E - Estado del aparcamiento \n");
+			printf("S - Salir del programa \n");
+			printf("B - Buscar un vehiculo \n");
+			scanf_s("%c", &opcion, 1); getchar();
+
+			switch (opcion) {
 			case 'r':
 			case 'R':
 				printf("Tienes coche(introduce c) o moto(m) \n");
 				scanf_s("%c", &otraOpcion, 1);
-				switch (otraOpcion)				{
+				switch (otraOpcion) {
 				case'c':
 				case'C':
 					if (plaza[0].ocupado * plaza[1].ocupado == 0) {
@@ -93,9 +107,9 @@ void main() {
 							time(&end[opcionPlaza - 1]);
 							tiempoTotal = difftime(end[opcionPlaza - 1], start[opcionPlaza - 1]);
 							dinero = 0.01 * tiempoTotal;               //Por cada segundo se paga 1 cent.
-							printf("Has tenido tu vehiculo aparcado %f minutos, vas a tener que pagar %f euros \n", tiempoTotal / 60, dinero);							
+							printf("Has tenido tu vehiculo aparcado %f minutos, vas a tener que pagar %f euros \n", tiempoTotal / 60, dinero);
 						}
-						else{          //Si la matricula no coincide 
+						else {          //Si la matricula no coincide 
 							printf("ERROR: Las matriculas no coinciden");
 						}
 					}
@@ -107,7 +121,7 @@ void main() {
 			case 'e':
 			case 'E':
 				printf("plaza 1 -- ");
-				if (plaza[0].ocupado == 0) printf("Libre \n"); 
+				if (plaza[0].ocupado == 0) printf("Libre \n");
 				else {
 					printf("Ocupada, matricula: ");
 					printf("%s", plaza[0].matricula); printf("\n");
@@ -117,7 +131,7 @@ void main() {
 				else {
 					printf("Ocupada, matricula: ");
 					printf("%s", plaza[1].matricula); printf("\n");
-				}	
+				}
 				printf("plaza 3 -- ");
 				if (plaza[2].ocupado == 0) printf("Libre \n");
 				else {
@@ -148,15 +162,19 @@ void main() {
 					}
 				}
 				if (z == 0) printf("Esa matricula no se corresponde con la de ningun vehiculo estacionado");
-				break;				
+				break;
 
 			default:
 				printf("Opcion no valida"); break;
+			}
+			getchar();
+			printf(" \n Pulsa un boton para volver al menu");
+			scanf_s("%c", &opcion);           //Este comando lo unico que hace es mantener la pantalla quieta para el usuario
+			system("cls");                    //pueda leerla comodamente. Al darle a un boton, se limpia y el codigo vuelve a empezar
 		}
-		getchar();
-		printf(" \n Pulsa un boton para volver al menu");
-		scanf_s("%c", &opcion);           //Este comando lo unico que hace es mantener la pantalla quieta para el usuario
-		system("cls");                    //pueda leerla comodamente. Al darle a un boton, se limpia y el codigo vuelve a empezar
 	}
-		
+	else {
+		printf("Nombre de usuario o contrase%ca incorrectos\n\n", 164);
+	}
+	system("PAUSE");
 }
