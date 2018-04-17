@@ -7,7 +7,7 @@
 #include<windows.h>
 #include<string.h>
 
-#define NUMPLAZAS 4
+#define NUMPLAZAS 10
 
 struct TPlaza {
 	int vehiculo; //0 - coche, 1 - moto
