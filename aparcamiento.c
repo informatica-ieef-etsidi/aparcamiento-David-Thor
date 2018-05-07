@@ -20,6 +20,12 @@ struct TUsuario {
 	char contraseña[10];
 };
 
+char menu();
+int esDigitoValido(char caracter);
+int esLetraValida(char caracter);
+int esMatriculaValida(char matricula[]);
+int existeUsuario(struct TUsuario usuarioValido, char username[], char password[]);
+
 void main() {        
 
 	struct TPlaza plaza[NUMPLAZAS] = { {0,0}, {0,0}, {1,0}, {1,0} };
@@ -29,10 +35,12 @@ void main() {
 	int i, z;
 	float dinero, tiempoTotal;
 
-	printf("Introduce tu nombre de usuario: \n");
-	gets(pedirNombre);
-	printf("Introduce tu contrase%ca: \n", 164);
-	gets(pedirContraseña);
+	do {
+		printf("Introduce tu nombre de usuario: \n");
+		gets(pedirNombre);
+		printf("Introduce tu contrase%ca: \n", 164);
+		gets(pedirContraseña);
+	}while (existeUsuario(usuario, pedirNombre, pedirContraseña) == 0);
 
 	if (strcmp(pedirNombre, usuario.nombre) == 0 && strcmp(pedirContraseña, usuario.contraseña) == 0) {
 		while (1) {
@@ -40,17 +48,8 @@ void main() {
 
 			//Pedir datos por pantalla   
 			time_t start[4], end[4];  //Creacion de objetos para calcular el tiempo que un coche esta aparcado
-			SYSTEMTIME str_t;
-			GetSystemTime(&str_t);
 
-			printf("Son las %d:%d:% d\n", str_t.wHour, str_t.wMinute, str_t.wSecond);
-			printf("Seleccione una de estas opciones : \n");
-			printf("R - Reservar plaza \n");
-			printf("A - Abandonar plaza \n");
-			printf("E - Estado del aparcamiento \n");
-			printf("S - Salir del programa \n");
-			printf("B - Buscar un vehiculo \n");
-			scanf_s("%c", &opcion, 1); getchar();
+			opcion = menu();
 
 			switch (opcion) {
 			case 'r':
@@ -65,7 +64,10 @@ void main() {
 							if (plaza[j].ocupado == 0) {
 								plaza[j].ocupado = 1;
 								printf("Introduce tu matricula: \n"); getchar();
-								gets(plaza[j].matricula);
+								do {
+									gets(plaza[j].matricula);
+									if (esMatriculaValida(plaza[j].matricula) == 0) printf("Matricula no valida, vuelve a introducirla\n");
+								} while (esMatriculaValida(plaza[j].matricula) == 0);
 								time(&start[j]);
 								printf("Tu coche ha sido aparcado en la plaza %d", j + 1);
 								break;
@@ -81,7 +83,10 @@ void main() {
 							if (plaza[j].ocupado == 0) {
 								plaza[j].ocupado = 1;
 								printf("Introduce tu matricula: \n"); getchar();
-								gets(plaza[j].matricula);
+								do {
+									gets(plaza[j].matricula);
+									if (esMatriculaValida(plaza[j].matricula) == 0) printf("Matricula no valida, vuelve a introducirla\n");
+								} while (esMatriculaValida(plaza[j].matricula) == 0);
 								time(&start[j]);
 								printf("Tu moto ha sido aparcada en la plaza %d", j + 1);
 								break;
@@ -169,12 +174,70 @@ void main() {
 			}
 			getchar();
 			printf(" \n Pulsa un boton para volver al menu");
-			scanf_s("%c", &opcion);           //Este comando lo unico que hace es mantener la pantalla quieta para el usuario
-			system("cls");                    //pueda leerla comodamente. Al darle a un boton, se limpia y el codigo vuelve a empezar
+			system("PAUSE");
+			system("cls");                    
 		}
 	}
 	else {
 		printf("Nombre de usuario o contrase%ca incorrectos\n\n", 164);
 	}
 	system("PAUSE");
+}
+
+
+char menu() {
+	char opcion;
+	SYSTEMTIME str_t;
+	GetSystemTime(&str_t);
+
+	printf("Son las %d:%d:% d\n", str_t.wHour, str_t.wMinute, str_t.wSecond);
+	printf("Seleccione una de estas opciones : \n");
+	printf("R - Reservar plaza \n");
+	printf("A - Abandonar plaza \n");
+	printf("E - Estado del aparcamiento \n");
+	printf("S - Salir del programa \n");
+	printf("B - Buscar un vehiculo \n");
+	scanf_s("%c", &opcion, 1); getchar();
+
+	return opcion;
+}
+
+
+int esMatriculaValida(char matricula[]) {
+	int i;
+
+	if (strlen(matricula) != 7) return 0;
+
+	for (i = 0; i <= strlen(matricula); i++) {
+		if (i < 4) {
+			if (97 <= matricula[i] && matricula[i] <= 122) matricula[i] -= 32;  //Si las letras son minusculas, se pasan a mayusculas
+			if (esLetraValida(matricula[i]) == 0) return 0;
+		}
+		if (i < 7) {
+			if (esDigitoValido == 0) return 0;
+		}
+	}
+	return 1;
+}
+
+
+int esDigitoValido(char caracter) {
+	if (48 <= caracter && caracter <= 57) {
+		return 1;
+	}
+	return 0;
+}
+
+
+int esLetraValida(char caracter) {
+	if (65 <= caracter && caracter <= 90) {
+		if (caracter != 65 && caracter != 69 && caracter != 73 && caracter != 79 && caracter != 85)  return 1;
+	}
+	return 0;
+}
+
+
+int existeUsuario(struct TUsuario usuarioValido, char username[], char password[]) {
+
+
 }
